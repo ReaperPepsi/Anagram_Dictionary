@@ -20,4 +20,4 @@ htmlcov/
 
 
 # Sensitive configs
-config/database_config_file.yaml
+app/config/database_config_file.yaml
