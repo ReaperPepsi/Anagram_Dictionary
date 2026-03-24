@@ -1,0 +1,5 @@
+database:
+  server: "localhost" # use ip and port connection (standard tcp/ip SQL Connection)
+  database: "Anagram_Instance" 
+  username: "reaper_pepsi" # create a sql login 
+  password: "denishateg75"

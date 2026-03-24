@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.env
+venv/
+*.egg-info/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# Pytest / coverage
+.coverage
+htmlcov/
+
+
+# Sensitive configs
+config/database_config_file.yaml
