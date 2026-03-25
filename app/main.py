@@ -1,24 +1,20 @@
 from fastapi import FastAPI
-from app.Database.Postgres_connection_engine import SessionDep
-from sqlmodel import select
-from sqlalchemy import text
+from app.Database.Postgres_connection_engine import engine
+from sqlmodel import  SQLModel
+from .routers import users, authentication
+
 
 app = FastAPI()
+
+SQLModel.metadata.create_all(engine)
+
+app.include_router(users.router)
+app.include_router(authentication.router)
 
 @app.get("/")
 async def root():
     return "hello"
 
-
-@app.get("/test")
-async def get_test_values(session: SessionDep):
-    result = session.execute(text("SELECT * FROM test"))
-    rows = result.fetchall()  # tuple list
-    
-    # Convertim la listă de dicturi pentru JSON
-    data = [dict(row._mapping) for row in rows]
-    return data
-    
 
 
 

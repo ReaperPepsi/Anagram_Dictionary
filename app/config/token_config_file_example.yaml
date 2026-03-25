@@ -1,0 +1,4 @@
+token:
+  SECRET_KEY:  "your self generated key" # use openssl rand -hex 32 to generate your key
+  ALGORITHM: "HS256" #standard encryption algorithm
+  ACCESS_TOKEN_EXPIRE_MINUTES: 60 #set a time for token expiration

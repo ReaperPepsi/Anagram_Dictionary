@@ -21,3 +21,4 @@ htmlcov/
 
 # Sensitive configs
 app/config/database_config_file.yaml
+app/config/token_config_file.yaml
