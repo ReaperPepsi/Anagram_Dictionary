@@ -35,7 +35,7 @@ def create_token_access(user_data: dict):
 # verify the access token based on the payload data and based on the secret generated key
 def verify_access_token(token: str, credential_exception):
     try:
-        payload = jwt.decode(token, token_configuration['SECRET_KEY'], algorithm=token_configuration['ALGORITHM'])
+        payload = jwt.decode(token, token_configuration['SECRET_KEY'], algorithms=[token_configuration['ALGORITHM']])
         user_id: int = payload.get("user_id")
 
         if not user_id:
@@ -56,5 +56,5 @@ def get_current_user(token: str = Depends(oath2_scheme)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-
+    print(f"Token ul trimis: {token}")
     return verify_access_token(token, credentials_exception)

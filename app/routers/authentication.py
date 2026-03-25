@@ -1,14 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from app.Models.User_Models import User
+from app.Models.User_Models import User, UserCreate, UserResponse
 from app.utils.user_validation import validate_login
 from app.utils.oath2 import create_token_access
 from app.Models.Authentication_Models import Token
 from app.Database.Postgres_connection_engine import SessionDep
 from sqlmodel import select
+from app.utils.user_validation import password_hasher
 
 
 router = APIRouter(
+    prefix = "/auth",
     tags = ['Authentication']
 )
 
@@ -29,3 +31,19 @@ def login(session: SessionDep, user_credentials: OAuth2PasswordRequestForm = Dep
     return Token(token=access_token, token_type= "bearer")
     
 
+
+
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def create_user(user: UserCreate ,session: SessionDep):
+    check_existing_user = session.exec(select(User).where(User.username == user.username)).first()
+
+    if check_existing_user:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
+
+    user.password = password_hasher(user.password)
+    new_user = User.model_validate(user)
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+
+    return new_user
