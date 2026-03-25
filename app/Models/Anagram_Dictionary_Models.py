@@ -2,8 +2,9 @@ from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Index, UniqueConstraint
 from sqlalchemy.sql import func
 from datetime import datetime
+from typing import List
 
-class Anagram_Dictionary(SQLModel, table = True):
+class AnagramDictionary(SQLModel, table = True):
     __tablename__ = 'Dictionary'
     id: int | None = Field(default = None, primary_key = True)
     key_word: str
@@ -32,10 +33,19 @@ class Anagram_Dictionary(SQLModel, table = True):
     
 
 # User input list of words to be grouped
-class Anagram_Input(SQLModel):
+class AnagramInput(SQLModel):
     words: list[str]
 
 
-class Anagram_Response(SQLModel):
+class AnagramPostResponse(SQLModel):
     added: list[str] | None
     skipped: list | None
+
+
+class AnagramGroup(SQLModel):
+    key_word: str
+    words: List[str] = Field(default_factory=list)
+
+
+class AllAnagramGroupsResponse(SQLModel):
+    groups: List[AnagramGroup] = Field(default_factory=list)
