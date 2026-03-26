@@ -4,14 +4,13 @@ from fastapi.params import Depends
 from app.utils.db_connection_string import DATABASE_URL
 
 
-#conexiunea propriu-zisa
+# create the engine to hold up the sessions
 engine = create_engine(DATABASE_URL, echo=True)
 
+
+# use get_session() as a Dependecy injection for each relevant endpoint
 def get_session():
-    # Deschide o sesiune SQLAlchemy pentru fiecare request
     with Session(engine) as session:
-        # yield permite FastAPI să injecteze session-ul în route
-        # după ce request-ul se termină, session-ul se închide automat
         yield session
 
 

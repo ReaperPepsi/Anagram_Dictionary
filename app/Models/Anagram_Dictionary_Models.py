@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 from datetime import datetime
 from typing import List
 
+# Dictionary Table
 class AnagramDictionary(SQLModel, table = True):
     __tablename__ = 'Dictionary'
     id: int | None = Field(default = None, primary_key = True)
@@ -33,19 +34,20 @@ class AnagramDictionary(SQLModel, table = True):
     
 
 # User input list of words to be grouped
-class AnagramInput(SQLModel):
+class AnagramsInput(SQLModel):
     words: list[str]
 
-
+# Response based on the client input
 class AnagramPostResponse(SQLModel):
     added: list[str] | None
     skipped: list | None
 
-
+# Schema for list endpoint for grouping the corresponding words
 class AnagramGroup(SQLModel):
     key_word: str
     words: List[str] = Field(default_factory=list)
 
-
+# Schema for list endpoint response
 class AllAnagramGroupsResponse(SQLModel):
     groups: List[AnagramGroup] = Field(default_factory=list)
+
