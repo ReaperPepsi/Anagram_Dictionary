@@ -4,6 +4,10 @@ from app.utils.oath2 import get_current_user
 from app.Models.Anagram_Dictionary_Models import AnagramsInput, AnagramDictionary, AnagramPostResponse, AnagramGroup
 from sqlmodel import select
 from sqlalchemy.exc import IntegrityError
+from app.logging_config import logger
+
+
+log = logger.getChild("anagrams")
 
 
 router = APIRouter(
@@ -21,8 +25,10 @@ def group_anagrams(words: AnagramsInput, session: SessionDep, current_user: int 
     list_of_added = []
     list_of_skipped = []
 
+    log.info(f"Startint INSERT operation for {words}")
     for current_word in words.words:
         if not current_word:
+            log.warning(f"INSERT statement termianted with - Empty item provided: {current_word}")
             list_of_skipped.append({
                 "word": current_word,
                 "reason": "emtpy word provided"
@@ -47,16 +53,20 @@ def group_anagrams(words: AnagramsInput, session: SessionDep, current_user: int 
             if isinstance(e.orig, Exception) and hasattr(e.orig, "sqlstate"):
                 if e.orig.sqlstate == "23505":
                     reason = "duplicate_value"
+                    log.warning(f"DB insert failed for item: {new_word.word} - duplicate value provided")
                 else:
                     reason = "db_constraint_error"
+                    log.warning(f"DB insert failed for item: {new_word.word} - constraint db error")
             else:
                 reason = "unknown_error"
+                log.warning(f"DB insert failed for item: {new_word.word} - unknown error")
 
             list_of_skipped.append({
                 "word": current_word,
                 "reason": reason
             })
 
+    log.info(f"INSERT operation terminated with - {len(list_of_added)} added items and {len(list_of_skipped)} skipped items")
     return {"added": list_of_added, "skipped" : list_of_skipped}
 
 
@@ -67,7 +77,8 @@ def get_all_groups(session: SessionDep, current_user: int = Depends(get_current_
     data_from_db = session.exec(select(AnagramDictionary).where(AnagramDictionary.user_id == current_user.id)).all()
 
     if not data_from_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = f"Your user do not have any post")
+        log.warning(f"SELECT statement termianetd with - User: {current_user.id} does not have any entry in DB")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = f"Your user do not have anagram groups")
 
     response = dict()
     for data in data_from_db:
@@ -75,7 +86,7 @@ def get_all_groups(session: SessionDep, current_user: int = Depends(get_current_
             response[data.key_word] = [data.word]
         else:
             response[data.key_word].append(data.word)
-
+    
     return [AnagramGroup(key_word=k, words=v) for k, v in response.items()]
 
 
@@ -87,6 +98,7 @@ def get_word_anagram_group(word: str, session: SessionDep, current_user: int = D
     key_word_from_db = session.exec(select(AnagramDictionary.key_word).where(AnagramDictionary.user_id == current_user.id, AnagramDictionary.key_word == sort_word(word))).first()
 
     if not key_word_from_db:
+        log.warning(f"SELECT statement termianted with - Word with no anagram group provided: {word}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = f"Your do not have any anagram dictionary for this word")
     
     data_from_db = session.exec(select(AnagramDictionary).where(AnagramDictionary.user_id == current_user.id, AnagramDictionary.key_word == key_word_from_db)).all()
@@ -103,9 +115,10 @@ def delete_word(word: str, session: SessionDep, current_user_id: int = Depends(g
     get_word_from_db = session.exec(select(AnagramDictionary).where(AnagramDictionary.user_id == current_user_id.id, AnagramDictionary.word == word)).first()
 
     if not get_word_from_db:
+        log.warning(f"DELETE statement terminated with - invalid word provided: {word} - current user do not have this word in DB")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Word: {word} does not exists in your dictionary")
     
     session.delete(get_word_from_db)
     session.commit()
-
+    log.info(f"DELETE statement terminated with - Word: {word} deleted from database for user_id = {current_user_id.id}")
     return Response(status_code=status.HTTP_204_NO_CONTENT)

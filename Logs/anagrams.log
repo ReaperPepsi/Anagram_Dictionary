@@ -1,0 +1,9 @@
+2026-03-26 20:25:46 | INFO     | app.anagrams | INSERT operation terminated with - 0 added items and 2 skipped items
+2026-03-26 20:27:13 | INFO     | app.anagrams | Startint INSERT operation for words=['naa', 'ana']
+2026-03-26 20:27:13 | WARNING  | app.anagrams | DB insert failed for item: naa - duplicate value provided
+2026-03-26 20:27:13 | WARNING  | app.anagrams | DB insert failed for item: ana - duplicate value provided
+2026-03-26 20:27:13 | INFO     | app.anagrams | INSERT operation terminated with - 0 added items and 2 skipped items
+2026-03-26 20:27:42 | WARNING  | app.anagrams | DELETE stateent terminated with - invalid word provided: 123 - current user do not have this word in DB
+2026-03-26 20:27:49 | WARNING  | app.anagrams | DELETE stateent terminated with - invalid word provided: baaaaaa - current user do not have this word in DB
+2026-03-26 20:27:57 | INFO     | app.anagrams | DELETE stateent terminated with - Word: ana deleted from database for user_id = 2
+2026-03-26 20:31:05 | WARNING  | app.anagrams | SELECT statement termianted with - Word with no anagram group provided: ana1

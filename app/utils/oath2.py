@@ -3,7 +3,7 @@ from jwt import PyJWTError
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from app.Models.Authentication_Models import Token, Token_Data
+from app.Models.Authentication_Models import Token, TokenData
 
 
 oath2_scheme = OAuth2PasswordBearer(tokenUrl = 'login')
@@ -40,7 +40,7 @@ def verify_access_token(token: str, credential_exception):
 
         if not user_id:
             raise credential_exception
-        token_data = Token_Data(id = user_id)
+        token_data = TokenData(id = user_id)
 
     except PyJWTError:
         raise credential_exception
@@ -56,5 +56,4 @@ def get_current_user(token: str = Depends(oath2_scheme)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    print(f"Token ul trimis: {token}")
     return verify_access_token(token, credentials_exception)

@@ -1,0 +1,7 @@
+2026-03-26 18:34:54 | WARNING  | app.auth | User denis2 does not exists inside database
+2026-03-26 18:42:36 | INFO     | app.auth | Token created successfully for user denis1
+2026-03-26 18:42:44 | WARNING  | app.auth | Login failed for: denis12 - does not exists inside database
+2026-03-26 18:42:54 | WARNING  | app.auth | Login failed for: denis1 - wrong password
+2026-03-26 18:43:02 | INFO     | app.auth | Token created successfully for user denis1
+2026-03-26 18:45:07 | WARNING  | app.auth | Username denis1 attempts to create a new user with the same username
+2026-03-26 18:46:26 | WARNING  | app.auth | Create a new login failed - denis1 already exists

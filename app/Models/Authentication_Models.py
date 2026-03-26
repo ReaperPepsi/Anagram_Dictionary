@@ -4,5 +4,5 @@ class Token(SQLModel):
     token: str
     token_type: str
 
-class Token_Data(SQLModel):
+class TokenData(SQLModel):
     id: int | None = None
