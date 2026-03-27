@@ -192,15 +192,6 @@ After running the app:
 
 ---
 
-## 🧩 Future Improvements
-
-* Pagination for large datasets
-* Rate limiting
-* Better error handling
-* Unit & integration testing
-* Docker support
-
----
 
 ## 🧠 What I learned
 
